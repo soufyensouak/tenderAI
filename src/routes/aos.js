@@ -7,6 +7,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANO
 router.get('/', requireAuth, async (req, res) => {
   let query = supabase.from('aos').select('*');
 
+  // Filtres
   if (req.query.sector) query = query.eq('sector', req.query.sector);
   if (req.query.dept) query = query.eq('dept', req.query.dept);
 
@@ -17,6 +18,7 @@ router.get('/', requireAuth, async (req, res) => {
 
 router.get('/:id', requireAuth, async (req, res) => {
   const { data, error } = await supabase.from('aos').eq('id', req.params.id).single();
+  if (error) return res.status(404).json({ error: "AO non trouvé" });
   res.json(data);
 });
 
